@@ -1,0 +1,5 @@
+[== MEMORY ==]
+We use 16-bit addressing which gives us 64KiB of RAM
+
+== MEMORY MAP ==
+

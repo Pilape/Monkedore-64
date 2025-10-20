@@ -1,0 +1,11 @@
+[== INSTRUCTION SET ==]
+
+Opcode | Name | Function
+————————————————————————————————
+  00   | NOP  | ( -- )
+  01   | PUSH | ( -- NextWord )
+  02   | DUP  | ( a -- a a )
+  03   | OVER | ( a b -- a b a )
+  04   | POP  | ( a -- )
+  05   | NIP  | ( a b -- b )
+  06   | SWAP | ( a b -- b a )
