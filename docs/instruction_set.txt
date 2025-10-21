@@ -1,11 +1,27 @@
 [== INSTRUCTION SET ==]
 
-Opcode | Name | Function
+Opcode | Name  | Function
 ————————————————————————————————
-  00   | NOP  | ( -- )
-  01   | PUSH | ( -- NextWord )
-  02   | DUP  | ( a -- a a )
-  03   | OVER | ( a b -- a b a )
-  04   | POP  | ( a -- )
-  05   | NIP  | ( a b -- b )
-  06   | SWAP | ( a b -- b a )
+  00   | NOP   | ( -- )
+  01   | HALT  | ( -- ) Stops execution
+
+  02   | PUSH  | ( -- NextWord )
+  03   | DUP   | ( a -- a a )
+  04   | OVER  | ( a b -- a b a )
+
+  05   | POP   | ( a -- )
+  06   | NIP   | ( a b -- b )
+
+  07   | SWAP  | ( a b -- b a )
+  08   | ROT   | ( a b c -- b c a)
+
+  09   | GET   | ( a -- dataStack[ptr-a] )
+  0A   | SET   | ( a b -- ) dataStack[ptr-b] = a
+
+  0B   | LOAD  | ( a -- ram[a] )
+  0C   | STORE | ( a b -- ) ram[b] = a
+
+  0D   | ADD   | ( a b -- a+b ) Sets carry on overflow
+  0E   | ADDc  | ( a b -- a+b+carry ) Sets carry on overflow
+  0F   | SUB   | ( a b -- a-b ) Sets carry on underflow
+  10   | SUBc  | ( a b -- a-b-carry ) Sets carry on underflow

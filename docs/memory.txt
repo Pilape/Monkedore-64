@@ -1,5 +1,16 @@
 [== MEMORY ==]
+
+== STACKS ==
+We have two stacks: the data stack and the return stack.
+Both can store up to 256 16-bit words.
+
+== RAM ==
 We use 16-bit addressing which gives us 64KiB of RAM
 
-== MEMORY MAP ==
+=- MEMORY MAP --
+
+Addresses | Size  | Use 
+————————————————————————————————
+0000-7FFF | 32KiB | ROM
+8000-FFFF | 32KiB | General purpose RAM
 

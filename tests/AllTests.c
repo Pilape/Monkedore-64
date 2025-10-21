@@ -1,8 +1,16 @@
 #include <stdio.h>
 #include "CuTest.h"
 
-void RunTests(CuSuite* suite) {
+#define MONKEDORE_IMPLEMENTATION
+#include "../monkedore.h"
+
+CuSuite* StackHandlingGetSuite();
+
+void RunTests() {
     CuString* output = CuStringNew();
+    CuSuite* suite = CuSuiteNew();
+
+    CuSuiteAddSuite(suite, StackHandlingGetSuite());
 
     CuSuiteRun(suite);
     CuSuiteSummary(suite, output);
@@ -11,7 +19,6 @@ void RunTests(CuSuite* suite) {
 }
 
 int main() {
-    CuSuite* suite = CuSuiteNew();
-    RunTests(suite);
+    RunTests();
     return 0;
 }

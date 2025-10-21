@@ -1,0 +1,12 @@
+[== CPU ==]
+
+== REGISTERS ==
+2x 8-bit Stack pointers
+16-bit instruction pointer
+8-bit carry bit register
+
+== INSTRUCTION SET ==
+See instruction_set.txt
+
+== MEMORY ==
+See memory.txt
