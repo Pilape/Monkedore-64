@@ -20,8 +20,17 @@ Opcode | Name  | Function
 
   0B   | LOAD  | ( a -- ram[a] )
   0C   | STORE | ( a b -- ) ram[b] = a
+  0D   | LOADB | ( a -- (byte)ram[a] )
+  0E   | STOREB| ( a b -- ) ram[b] = (byte)a
 
-  0D   | ADD   | ( a b -- a+b ) Sets carry on overflow
-  0E   | ADDc  | ( a b -- a+b+carry ) Sets carry on overflow
-  0F   | SUB   | ( a b -- a-b ) Sets carry on underflow
-  10   | SUBc  | ( a b -- a-b-carry ) Sets carry on underflow
+  0F   | ADD   | ( a b -- a+b ) Sets carry on overflow
+  10   | SUB   | ( a b -- a-b ) Sets carry on underflow
+  11   | ADDc  | ( a b -- a+b+carry ) Sets carry on overflow
+  12   | SUBc  | ( a b -- a-b-carry ) Sets carry on underflow
+
+  13   | bNAND | ( a b --  ~(a & b))
+  14   | NAND  | ( a b -- !(a && b))
+
+  15   | JUMP  | ( -- ) ip = NextWord
+  16   | BRANCH| ( -- ) ip += (signed)NextByte
+  17   | BIF0  | ( a -- ) if (a == 0) ip += (signed)NextByte

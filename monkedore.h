@@ -63,8 +63,9 @@ monkedore_ReturnStatus monkedore_LoadProgram(monkedore_Vm* vm, monkedore_Byte pr
     return monkedore_SUCCESS;
 }
 
-#define PUSH(value, stack) (stack).data[stack.ptr] = value; (stack).ptr++;
-#define FETCH_WORD() (*(monkedore_Word*)((void*)(&vm->ram[vm->ip]))); vm->ip+=2
+#define PUSH(value, stack) (stack).data[stack.ptr] = value; (stack).ptr++
+#define FETCH_WORD() ((monkedore_Word)(vm->ram[vm->ip++] << 8) | (monkedore_Word)vm->ram[vm->ip++])
+#define STACK_TOP(stack) (stack).data[(stack).ptr-1]
 
 monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
 
@@ -73,7 +74,22 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
     switch (opcode) {
         /* NOP  */ case 0x00: break;
         /* HALT */ case 0x01: return monkedore_HALTED;
+
         /* PUSH */ case 0x02: PUSH(FETCH_WORD(), vm->data_stack); break;
+        /* DUP  */ case 0x03: PUSH(STACK_TOP(vm->data_stack), vm->data_stack); break;
+        /* OVER */ case 0x04: break;
+
+        /* POP  */ case 0x05: break;
+        /* NIP  */ case 0x06: break;
+
+        /* SWAP */ case 0x07: break;
+        /* ROT  */ case 0x08: break;
+
+        /* GET  */ case 0x09: break;
+        /* SET  */ case 0x0A: break;
+
+        /* LOAD */ case 0x0B: break;
+        /* STORE*/ case 0x0C: break;
     
     }
 
@@ -87,6 +103,7 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
     return monkedore_SUCCESS;
 }
 
+#undef STACK_TOP
 #undef FETCH_WORD
 #undef PUSH
 

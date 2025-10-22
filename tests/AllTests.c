@@ -4,12 +4,14 @@
 #define MONKEDORE_IMPLEMENTATION
 #include "../monkedore.h"
 
+CuSuite* MiscInstructionsGetSuite();
 CuSuite* StackHandlingGetSuite();
 
 void RunTests() {
     CuString* output = CuStringNew();
     CuSuite* suite = CuSuiteNew();
 
+    CuSuiteAddSuite(suite, MiscInstructionsGetSuite());
     CuSuiteAddSuite(suite, StackHandlingGetSuite());
 
     CuSuiteRun(suite);
