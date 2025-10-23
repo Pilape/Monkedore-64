@@ -91,6 +91,16 @@ void TestNip(CuTest* tc) {
     CuAssertIntEquals(tc, 1, vm.data_stack.ptr);
 }
 
+void TestSwap(CuTest* tc) {
+    monkedore_Byte program[] = {
+        0x02, 0x10, 0x00, 0x02, 0x01, 0x01, 0x07, 0x01,
+    };
+    VM_INIT();
+
+    CuAssertIntEquals(tc, 0x1000, VM_STACK_TOP(vm.data_stack));
+    CuAssertIntEquals(tc, 0x0101, VM_STACK_ELEMENT(vm.data_stack, 1));
+}
+
 
 CuSuite* StackHandlingGetSuite() {
     CuSuite* suite = CuSuiteNew();
@@ -101,5 +111,6 @@ CuSuite* StackHandlingGetSuite() {
     SUITE_ADD_TEST(suite, TestPop);
     SUITE_ADD_TEST(suite, TestUnderflow);
     SUITE_ADD_TEST(suite, TestNip);
+    SUITE_ADD_TEST(suite, TestSwap);
     return suite;
 }
