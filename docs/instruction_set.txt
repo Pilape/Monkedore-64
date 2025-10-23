@@ -15,22 +15,25 @@ Opcode | Name  | Function
   07   | SWAP  | ( a b -- b a )
   08   | ROT   | ( a b c -- b c a)
 
-  09   | GET   | ( a -- dataStack[ptr-a] )
-  0A   | SET   | ( a b -- ) dataStack[ptr-b] = a
+  09   | LOAD  | ( a -- ram[a] )
+  0A   | STORE | ( a b -- ) ram[b] = a
+  0B   | LOADb | ( a -- (byte)ram[a] )
+  0C   | STOREb| ( a b -- ) ram[b] = (byte)a
 
-  0B   | LOAD  | ( a -- ram[a] )
-  0C   | STORE | ( a b -- ) ram[b] = a
-  0D   | LOADB | ( a -- (byte)ram[a] )
-  0E   | STOREB| ( a b -- ) ram[b] = (byte)a
+  0D   | ADD   | ( a b -- a+b ) Sets carry on overflow
+  0E   | SUB   | ( a b -- a-b ) Sets carry on underflow
+  0F   | ADDc  | ( a b -- a+b+carry ) Sets carry on overflow
+  10   | SUBc  | ( a b -- a-b-carry ) Sets carry on underflow
 
-  0F   | ADD   | ( a b -- a+b ) Sets carry on overflow
-  10   | SUB   | ( a b -- a-b ) Sets carry on underflow
-  11   | ADDc  | ( a b -- a+b+carry ) Sets carry on overflow
-  12   | SUBc  | ( a b -- a-b-carry ) Sets carry on underflow
+  11   | bNAND | ( a b --  ~(a & b))
+  12   | NAND  | ( a b -- !(a && b))
 
-  13   | bNAND | ( a b --  ~(a & b))
-  14   | NAND  | ( a b -- !(a && b))
+  13   | EQUAL | ( a b -- a==b )
+  14   | MORE  | ( a b -- a>b )
+  15   | LESS  | ( a b -- a<b )
 
-  15   | JUMP  | ( -- ) ip = NextWord
-  16   | BRANCH| ( -- ) ip += (signed)NextByte
-  17   | BIF0  | ( a -- ) if (a == 0) ip += (signed)NextByte
+  16   | JUMP  | ( -- ) ip = NextWord
+  17   | BRANCH| ( -- ) ip += (signed)NextByte
+  18   | BIF0  | ( a -- ) if (a == 0) ip += (signed)NextByte
+  19   | CALL  | ( -- ) Push(ip, returnStack); ip = NextWord
+  1A   | RET   | ( -- ) ip = Pop(returnStack)

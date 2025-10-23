@@ -66,30 +66,48 @@ monkedore_ReturnStatus monkedore_LoadProgram(monkedore_Vm* vm, monkedore_Byte pr
 #define PUSH(value, stack) (stack).data[stack.ptr] = value; (stack).ptr++
 #define FETCH_WORD() ((monkedore_Word)(vm->ram[vm->ip++] << 8) | (monkedore_Word)vm->ram[vm->ip++])
 #define STACK_TOP(stack) (stack).data[(stack).ptr-1]
+#define STACK_ELEMENT(stack, offset) (stack).data[(stack).ptr-1-offset]
 
 monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
 
     monkedore_Byte opcode = vm->ram[vm->ip++];
 
     switch (opcode) {
-        /* NOP  */ case 0x00: break;
-        /* HALT */ case 0x01: return monkedore_HALTED;
+        /* NOP   */ case 0x00: break;
+        /* HALT  */ case 0x01: return monkedore_HALTED;
 
-        /* PUSH */ case 0x02: PUSH(FETCH_WORD(), vm->data_stack); break;
-        /* DUP  */ case 0x03: PUSH(STACK_TOP(vm->data_stack), vm->data_stack); break;
-        /* OVER */ case 0x04: break;
+        /* PUSH  */ case 0x02: PUSH(FETCH_WORD(), vm->data_stack); break;
+        /* DUP   */ case 0x03: PUSH(STACK_TOP(vm->data_stack), vm->data_stack); break;
+        /* OVER  */ case 0x04: PUSH(STACK_ELEMENT(vm->data_stack, 1), vm->data_stack); break;
 
-        /* POP  */ case 0x05: break;
-        /* NIP  */ case 0x06: break;
+        /* POP   */ case 0x05: break;
+        /* NIP   */ case 0x06: break;
 
-        /* SWAP */ case 0x07: break;
-        /* ROT  */ case 0x08: break;
+        /* SWAP  */ case 0x07: break;
+        /* ROT   */ case 0x08: break;
 
-        /* GET  */ case 0x09: break;
-        /* SET  */ case 0x0A: break;
+        /* LOAD  */ case 0x09: break;
+        /* STORE */ case 0x0A: break;
+        /* LOADb */ case 0x0B: break;
+        /* STOREb*/ case 0x0C: break;
 
-        /* LOAD */ case 0x0B: break;
-        /* STORE*/ case 0x0C: break;
+        /* ADD   */ case 0x0D: break;
+        /* SUB   */ case 0x0E: break;
+        /* ADDc  */ case 0x0F: break;
+        /* SUBc  */ case 0x10: break;
+        
+        /* bNAND */ case 0x11: break;
+        /* NAND  */ case 0x12: break;
+
+        /* EQUAL */ case 0x13: break;
+        /* MORE  */ case 0x14: break;
+        /* LESS  */ case 0x15: break;
+
+        /* JUMP  */ case 0x16: break;
+        /* BRANCH*/ case 0x17: break;
+        /* BIF0  */ case 0x18: break;
+        /* CALL  */ case 0x19: break;
+        /* RET   */ case 0x1A: break;
     
     }
 
@@ -103,6 +121,7 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
     return monkedore_SUCCESS;
 }
 
+#undef STACK_ELEMENT
 #undef STACK_TOP
 #undef FETCH_WORD
 #undef PUSH

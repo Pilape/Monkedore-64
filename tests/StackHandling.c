@@ -40,11 +40,25 @@ void TestDup(CuTest* tc) {
     CuAssertIntEquals(tc, VM_STACK_ELEMENT(vm.data_stack, 1), 0x0267);
 }
 
+void TestOver(CuTest* tc) {
+    monkedore_Byte program[] = {
+        0x02, 0x01, 0x55, 0x02, 0x59, 0x01, 0x04, 0x01,
+    };
+    VM_INIT();
+
+    while (monkedore_ExecuteVmCycle(&vm) != monkedore_HALTED) { };
+
+    CuAssertIntEquals(tc, VM_STACK_TOP(vm.data_stack), 0x0155);
+    CuAssertIntEquals(tc, VM_STACK_ELEMENT(vm.data_stack, 1), 0x5901);
+    CuAssertIntEquals(tc, VM_STACK_ELEMENT(vm.data_stack, 2), 0x0155);
+}
+
 
 CuSuite* StackHandlingGetSuite() {
     CuSuite* suite = CuSuiteNew();
     SUITE_ADD_TEST(suite, TestPush);
     SUITE_ADD_TEST(suite, TestOverflow);
     SUITE_ADD_TEST(suite, TestDup);
+    SUITE_ADD_TEST(suite, TestOver);
     return suite;
 }
