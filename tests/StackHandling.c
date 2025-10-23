@@ -53,6 +53,32 @@ void TestOver(CuTest* tc) {
     CuAssertIntEquals(tc, VM_STACK_ELEMENT(vm.data_stack, 2), 0x0155);
 }
 
+void TestPop(CuTest* tc) {
+    monkedore_Byte program[] = {
+        0x02, 0x00, 0x69, 0x05, 0x01,
+    };
+    VM_INIT();
+
+    while (monkedore_ExecuteVmCycle(&vm) != monkedore_HALTED) { };
+
+    CuAssertIntEquals(tc, vm.data_stack.ptr, 0);
+}
+
+void TestUnderflow(CuTest* tc) {
+    monkedore_Byte program[] = {
+        0x05,
+    };
+    VM_INIT();
+
+    int has_underflown = 0;
+    for (int i=0; i<15; i++) {
+        if (monkedore_ExecuteVmCycle(&vm) == monkedore_ERROR_UNDERFLOW) has_underflown = 1;
+        vm.ip = 0;
+    }
+
+    CuAssertTrue(tc, has_underflown);
+}
+
 
 CuSuite* StackHandlingGetSuite() {
     CuSuite* suite = CuSuiteNew();
@@ -60,5 +86,7 @@ CuSuite* StackHandlingGetSuite() {
     SUITE_ADD_TEST(suite, TestOverflow);
     SUITE_ADD_TEST(suite, TestDup);
     SUITE_ADD_TEST(suite, TestOver);
+    SUITE_ADD_TEST(suite, TestPop);
+    SUITE_ADD_TEST(suite, TestUnderflow);
     return suite;
 }
