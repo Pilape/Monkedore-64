@@ -81,7 +81,7 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
         /* OVER  */ case 0x04: PUSH(STACK_ELEMENT(vm->data_stack, 1), vm->data_stack); break;
 
         /* POP   */ case 0x05: vm->data_stack.ptr--; break;
-        /* NIP   */ case 0x06: break;
+        /* NIP   */ case 0x06: STACK_ELEMENT(vm->data_stack, 1) = STACK_TOP(vm->data_stack); vm->data_stack.ptr--; break;
 
         /* SWAP  */ case 0x07: break;
         /* ROT   */ case 0x08: break;
