@@ -97,8 +97,23 @@ void TestSwap(CuTest* tc) {
     };
     VM_INIT();
 
+    while (monkedore_ExecuteVmCycle(&vm) != monkedore_HALTED) { };
+
     CuAssertIntEquals(tc, 0x1000, VM_STACK_TOP(vm.data_stack));
     CuAssertIntEquals(tc, 0x0101, VM_STACK_ELEMENT(vm.data_stack, 1));
+}
+
+void TestRot(CuTest* tc) {
+    monkedore_Byte program[] = {
+        0x02, 0x01, 0x0A, 0x02, 0x01, 0x0B, 0x02, 0x01, 0x0C, 0x08, 0x01,
+    };
+    VM_INIT();
+
+    while (monkedore_ExecuteVmCycle(&vm) != monkedore_HALTED) { };
+
+    CuAssertIntEquals(tc, 0x010A, VM_STACK_TOP(vm.data_stack));
+    CuAssertIntEquals(tc, 0x010C, VM_STACK_ELEMENT(vm.data_stack, 1));
+    CuAssertIntEquals(tc, 0x010B, VM_STACK_ELEMENT(vm.data_stack, 2));
 }
 
 
@@ -112,5 +127,6 @@ CuSuite* StackHandlingGetSuite() {
     SUITE_ADD_TEST(suite, TestUnderflow);
     SUITE_ADD_TEST(suite, TestNip);
     SUITE_ADD_TEST(suite, TestSwap);
+    SUITE_ADD_TEST(suite, TestRot);
     return suite;
 }
