@@ -46,10 +46,35 @@ void TestStore(CuTest* tc) {
     CuAssertIntEquals(tc, 0, vm.data_stack.ptr);
 }
 
+void TestStoreEdge(CuTest* tc) {
+    monkedore_Byte program[] = {
+        0x02, 0x76, 0x67, 0x02, 0xFF, 0xFF, 0x0A, 0x01,
+    };
+    VM_INIT();
+
+    while (monkedore_ExecuteVmCycle(&vm) != monkedore_HALTED) { };
+
+    CuAssertIntEquals(tc, 0x76, vm.ram[0xFFFF]);
+    CuAssertIntEquals(tc, 0x67, vm.ram[0x0000]);
+}
+
+void TestStoreLoad(CuTest* tc) {
+    monkedore_Byte program[] = {
+        0x02, 0x11, 0x22, 0x02, 0x55, 0x54, 0x0A, 0x02, 0x55, 0x54, 0x09, 0x01,
+    };
+    VM_INIT();
+
+    while (monkedore_ExecuteVmCycle(&vm) != monkedore_HALTED) { };
+
+    CuAssertIntEquals(tc, 0x1122, VM_STACK_TOP(vm.data_stack));
+}
+
 CuSuite* MemoryHandlingGetSuite() {
     CuSuite* suite = CuSuiteNew();
     SUITE_ADD_TEST(suite, TestLoad);
     SUITE_ADD_TEST(suite, TestLoadEdge);
     SUITE_ADD_TEST(suite, TestStore);
+    SUITE_ADD_TEST(suite, TestStoreEdge);
+    SUITE_ADD_TEST(suite, TestStoreLoad);
     return suite;
 }
