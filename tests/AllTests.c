@@ -6,6 +6,7 @@
 
 CuSuite* MiscInstructionsGetSuite();
 CuSuite* StackHandlingGetSuite();
+CuSuite* MemoryHandlingGetSuite();
 
 void RunTests() {
     CuString* output = CuStringNew();
@@ -13,6 +14,7 @@ void RunTests() {
 
     CuSuiteAddSuite(suite, MiscInstructionsGetSuite());
     CuSuiteAddSuite(suite, StackHandlingGetSuite());
+    CuSuiteAddSuite(suite, MemoryHandlingGetSuite());
 
     CuSuiteRun(suite);
     CuSuiteSummary(suite, output);

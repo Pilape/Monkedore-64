@@ -68,6 +68,7 @@ monkedore_ReturnStatus monkedore_LoadProgram(monkedore_Vm* vm, monkedore_Byte pr
 #define STACK_TOP(stack) (stack).data[(stack).ptr-1]
 #define STACK_ELEMENT(stack, offset) (stack).data[(stack).ptr-1-offset]
 #define POP(stack) (stack).data[(stack).ptr-1]; (stack).ptr--;
+#define GET_RAM_WORD(address) ((vm->ram[address] << 8) | (vm->ram[(address+1) & 0xFFFF]))
 
 monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
 
@@ -88,7 +89,7 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
         /* ROT   */ case 0x08: { monkedore_Word c = POP(vm->data_stack); monkedore_Word b = POP(vm->data_stack); monkedore_Word a = POP(vm->data_stack);
                                    PUSH(b, vm->data_stack); PUSH(c, vm->data_stack); PUSH(a, vm->data_stack); } break;
 
-        /* LOAD  */ case 0x09: break;
+        /* LOAD  */ case 0x09: { monkedore_Word address = POP(vm->data_stack); PUSH(GET_RAM_WORD(address), vm->data_stack); } break;
         /* STORE */ case 0x0A: break;
         /* LOADb */ case 0x0B: break;
         /* STOREb*/ case 0x0C: break;
@@ -123,6 +124,8 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
     return monkedore_SUCCESS;
 }
 
+#undef GET_RAM_WORD
+#undef POP
 #undef STACK_ELEMENT
 #undef STACK_TOP
 #undef FETCH_WORD
