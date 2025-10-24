@@ -29,6 +29,7 @@ struct monkedore_Stack {
 typedef struct {
     monkedore_Byte ram[0xFFFF+1];
     monkedore_Word ip;
+    monkedore_Byte carry;
 
     struct monkedore_Stack data_stack;
     struct monkedore_Stack return_stack;
@@ -95,7 +96,7 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
         /* LOADb */ case 0x0B: { monkedore_Word address = POP(vm->data_stack); PUSH(vm->ram[address], vm->data_stack); } break;
         /* STOREb*/ case 0x0C: { monkedore_Word address = POP(vm->data_stack); monkedore_Word word = POP(vm->data_stack); vm->ram[address] = word & 0xFF; } break;
 
-        /* ADD   */ case 0x0D: break;
+        /* ADD   */ case 0x0D: {monkedore_Word a = POP(vm->data_stack); monkedore_Word b = POP(vm->data_stack); monkedore_Word result = a + b; vm->carry = (result < a) ? 1 : 0; PUSH(result, vm->data_stack); } break;
         /* SUB   */ case 0x0E: break;
         /* ADDc  */ case 0x0F: break;
         /* SUBc  */ case 0x10: break;
