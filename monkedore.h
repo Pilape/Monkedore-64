@@ -67,7 +67,7 @@ monkedore_ReturnStatus monkedore_LoadProgram(monkedore_Vm* vm, monkedore_Byte pr
 #define FETCH_WORD() ((monkedore_Word)(vm->ram[vm->ip++] << 8) | (monkedore_Word)vm->ram[vm->ip++])
 #define STACK_TOP(stack) (stack).data[(stack).ptr-1]
 #define STACK_ELEMENT(stack, offset) (stack).data[(stack).ptr-1-offset]
-#define POP(stack) (stack).data[(stack).ptr-1]; (stack).ptr--;
+#define POP(stack) (stack).data[(stack).ptr-1]; (stack).ptr--
 #define GET_RAM_WORD(address) ((vm->ram[address] << 8) | (vm->ram[(address+1) & 0xFFFF]))
 #define SET_RAM_WORD(word, address) vm->ram[address] = word >> 8; vm->ram[(address+1) & 0xFFFF] = word & 0xFF
 
@@ -92,8 +92,8 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
 
         /* LOAD  */ case 0x09: { monkedore_Word address = POP(vm->data_stack); PUSH(GET_RAM_WORD(address), vm->data_stack); } break;
         /* STORE */ case 0x0A: { monkedore_Word address = POP(vm->data_stack); monkedore_Word word = POP(vm->data_stack); SET_RAM_WORD(word, address); } break;
-        /* LOADb */ case 0x0B: break;
-        /* STOREb*/ case 0x0C: break;
+        /* LOADb */ case 0x0B: { monkedore_Word address = POP(vm->data_stack); PUSH(vm->ram[address], vm->data_stack); } break;
+        /* STOREb*/ case 0x0C: { monkedore_Word address = POP(vm->data_stack); monkedore_Word word = POP(vm->data_stack); vm->ram[address] = word & 0xFF; } break;
 
         /* ADD   */ case 0x0D: break;
         /* SUB   */ case 0x0E: break;
@@ -101,17 +101,15 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
         /* SUBc  */ case 0x10: break;
         
         /* bNAND */ case 0x11: break;
-        /* NAND  */ case 0x12: break;
 
-        /* EQUAL */ case 0x13: break;
-        /* MORE  */ case 0x14: break;
-        /* LESS  */ case 0x15: break;
+        /* MORE  */ case 0x12: break;
+        /* LESS  */ case 0x13: break;
 
-        /* JUMP  */ case 0x16: break;
-        /* BRANCH*/ case 0x17: break;
-        /* BIF0  */ case 0x18: break;
-        /* CALL  */ case 0x19: break;
-        /* RET   */ case 0x1A: break;
+        /* JUMP  */ case 0x14: break;
+        /* BRANCH*/ case 0x15: break;
+        /* BIF0  */ case 0x16: break;
+        /* CALL  */ case 0x17: break;
+        /* RET   */ case 0x18: break;
     
     }
 
