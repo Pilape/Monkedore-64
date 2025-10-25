@@ -12,6 +12,8 @@ void TestAdd(CuTest* tc) {
         };
         VM_INIT();
 
+        vm.carry = 1;
+
         while (monkedore_ExecuteVmCycle(&vm) != monkedore_HALTED) { };
 
         CuAssertIntEquals(tc, 0x4000+0x2022, VM_STACK_TOP(vm.data_stack));
@@ -30,6 +32,10 @@ void TestAdd(CuTest* tc) {
         CuAssertIntEquals(tc, (0xffff+0x2324) & 0xFFFF, VM_STACK_TOP(vm.data_stack));
         CuAssertIntEquals(tc, 1, vm.carry);
     }
+}
+
+void TestSubtract(CuTest* tc) {
+
 }
 
 CuSuite* ArithmeticGetSuite() {

@@ -25,15 +25,18 @@ Opcode | Name  | Function
   0F   | ADDc  | ( a b -- a+b+carry ) Sets carry on overflow
   10   | SUBc  | ( a b -- a-b-carry ) Sets carry on underflow
 
-  11   | bNAND | ( a b --  ~(a & b))
-  12   | NAND  | ( a b -- !(a && b))
+  11   | SHL   | ( a b -- a<<b )
+  12   | SHR   | ( a b -- a>>b )
 
-  13   | EQUAL | ( a b -- a==b )
-  14   | MORE  | ( a b -- a>b )
-  15   | LESS  | ( a b -- a<b )
+  13   | bNAND | ( a b --  ~(a & b))
+  14   | NAND  | ( a b -- !(a && b))
 
-  16   | JUMP  | ( -- ) ip = NextWord
-  17   | BRANCH| ( -- ) ip += (signed)NextByte
-  18   | BIF0  | ( a -- ) if (a == 0) ip += (signed)NextByte
-  19   | CALL  | ( -- ) Push(ip, returnStack); ip = NextWord
-  1A   | RET   | ( -- ) ip = Pop(returnStack)
+  15   | EQUAL | ( a b -- a==b )
+  16   | MORE  | ( a b -- a>b )
+  17   | LESS  | ( a b -- a<b )
+
+  18   | JUMP  | ( -- ) ip = NextWord
+  19   | BRANCH| ( -- ) ip += (signed)NextByte
+  1A   | BIF0  | ( a -- ) if (a == 0) ip += (signed)NextByte
+  1B   | CALL  | ( -- ) Push(ip, returnStack); ip = NextWord
+  1C   | RET   | ( -- ) ip = Pop(returnStack)
