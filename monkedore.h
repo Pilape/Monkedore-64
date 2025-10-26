@@ -101,16 +101,22 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
         /* ADDc  */ case 0x0F: { monkedore_Word b = POP(vm->data_stack); monkedore_Word a = POP(vm->data_stack); monkedore_Word result = a + b + vm->carry; vm->carry = (result < a) ? 1 : 0; PUSH(result, vm->data_stack); } break;
         /* SUBc  */ case 0x10: { monkedore_Word b = POP(vm->data_stack); monkedore_Word a = POP(vm->data_stack); monkedore_Word result = a - b - vm->carry; vm->carry = (result > a) ? 1 : 0; PUSH(result, vm->data_stack); } break;
         
-        /* bNAND */ case 0x11: break;
+        /* SHL   */ case 0x11: { monkedore_Word b = POP(vm->data_stack); monkedore_Word a = POP(vm->data_stack); PUSH(a << b, vm->data_stack); } break;
+        /* SHR   */ case 0x12: { monkedore_Word b = POP(vm->data_stack); monkedore_Word a = POP(vm->data_stack); PUSH(a >> b, vm->data_stack); } break;
 
-        /* MORE  */ case 0x12: break;
-        /* LESS  */ case 0x13: break;
+        /* bNAND */ case 0x13: break;
+        /* NAND  */ case 0x14: break;
 
-        /* JUMP  */ case 0x14: break;
-        /* BRANCH*/ case 0x15: break;
-        /* BIF0  */ case 0x16: break;
-        /* CALL  */ case 0x17: break;
-        /* RET   */ case 0x18: break;
+        /* EQUAL */ case 0x15: break;
+        /* MORE  */ case 0x16: break;
+        /* LESS  */ case 0x17: break;
+
+        /* JUMP  */ case 0x18: break;
+        /* BRANCH*/ case 0x19: break;
+        /* BIF0  */ case 0x1A: break;
+        /* BIFN0 */ case 0x1B: break;
+        /* CALL  */ case 0x1C: break;
+        /* RET   */ case 0x1D: break;
     
     }
 
