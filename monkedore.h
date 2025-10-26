@@ -113,7 +113,7 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
         /* MORE  */ case 0x16: BINARY_OP(a > b);
         /* LESS  */ case 0x17: BINARY_OP(a < b);
 
-        /* JUMP  */ case 0x18: break;
+        /* JUMP  */ case 0x18: vm->ip = FETCH_WORD(); break;
         /* BRANCH*/ case 0x19: break;
         /* BIF0  */ case 0x1A: break;
         /* BIFN0 */ case 0x1B: break;
