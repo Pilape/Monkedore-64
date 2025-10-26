@@ -73,10 +73,34 @@ void TestMore(CuTest* tc) {
     }
 }
 
+void TestLess(CuTest* tc) {
+    {
+        monkedore_Byte program[] = {
+            0x02, 0x24, 0x32, 0x02, 0x21, 0x26, 0x17, 0x01,
+        };
+        VM_INIT();
+
+        while (monkedore_ExecuteVmCycle(&vm) != monkedore_HALTED) { };
+
+        CuAssertIntEquals(tc, 0x2432 < 0x2126, VM_STACK_TOP(vm.data_stack));
+    }
+    {
+        monkedore_Byte program[] = {
+                0x02, 0x02, 0x2B, 0x02, 0xB2, 0x22, 0x17, 0x01,
+        };
+        VM_INIT();
+
+        while (monkedore_ExecuteVmCycle(&vm) != monkedore_HALTED) { };
+
+        CuAssertIntEquals(tc, 0x022B < 0xB222, VM_STACK_TOP(vm.data_stack));
+    }
+}
+
 CuSuite* BooleanGetSuite() {
     CuSuite* suite = CuSuiteNew();
     SUITE_ADD_TEST(suite, TestNand);
     SUITE_ADD_TEST(suite, TestEqual);
     SUITE_ADD_TEST(suite, TestMore);
+    SUITE_ADD_TEST(suite, TestLess);
     return suite;
 }
