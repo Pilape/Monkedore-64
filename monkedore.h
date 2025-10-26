@@ -110,7 +110,7 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
         /* NAND  */ case 0x14: BINARY_OP(!(a && b)); 
 
         /* EQUAL */ case 0x15: BINARY_OP(a == b);
-        /* MORE  */ case 0x16: break;
+        /* MORE  */ case 0x16: BINARY_OP(a > b);
         /* LESS  */ case 0x17: break;
 
         /* JUMP  */ case 0x18: break;
