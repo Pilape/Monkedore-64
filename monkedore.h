@@ -71,6 +71,7 @@ monkedore_ReturnStatus monkedore_LoadProgram(monkedore_Vm* vm, monkedore_Byte pr
 #define POP(stack) (stack).data[(stack).ptr-1]; (stack).ptr--
 #define GET_RAM_WORD(address) ((vm->ram[address] << 8) | (vm->ram[(address+1) & 0xFFFF]))
 #define SET_RAM_WORD(word, address) vm->ram[address] = word >> 8; vm->ram[(address+1) & 0xFFFF] = word & 0xFF
+#define BINARY_OP(op) { monkedore_Word b = POP(vm->data_stack); monkedore_Word a = POP(vm->data_stack); PUSH(op, vm->data_stack); }
 
 monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
 
@@ -101,11 +102,11 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
         /* ADDc  */ case 0x0F: { monkedore_Word b = POP(vm->data_stack); monkedore_Word a = POP(vm->data_stack); monkedore_Word result = a + b + vm->carry; vm->carry = (result < a) ? 1 : 0; PUSH(result, vm->data_stack); } break;
         /* SUBc  */ case 0x10: { monkedore_Word b = POP(vm->data_stack); monkedore_Word a = POP(vm->data_stack); monkedore_Word result = a - b - vm->carry; vm->carry = (result > a) ? 1 : 0; PUSH(result, vm->data_stack); } break;
         
-        /* SHL   */ case 0x11: { monkedore_Word b = POP(vm->data_stack); monkedore_Word a = POP(vm->data_stack); PUSH(a << b, vm->data_stack); } break;
-        /* SHR   */ case 0x12: { monkedore_Word b = POP(vm->data_stack); monkedore_Word a = POP(vm->data_stack); PUSH(a >> b, vm->data_stack); } break;
+        /* SHL   */ case 0x11: BINARY_OP(a << b); break;
+        /* SHR   */ case 0x12: BINARY_OP(a >> b); break;
 
-        /* bNAND */ case 0x13: break;
-        /* NAND  */ case 0x14: break;
+        /* bNAND */ case 0x13: BINARY_OP(~(a & b)); break;
+        /* NAND  */ case 0x14: BINARY_OP(!(a && b)); break;
 
         /* EQUAL */ case 0x15: break;
         /* MORE  */ case 0x16: break;
@@ -130,6 +131,7 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
     return monkedore_SUCCESS;
 }
 
+#undef BINARY_OP
 #undef SET_RAM_WORD
 #undef GET_RAM_WORD
 #undef POP

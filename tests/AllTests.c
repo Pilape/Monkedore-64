@@ -9,6 +9,7 @@ CuSuite* StackHandlingGetSuite();
 CuSuite* MemoryHandlingGetSuite();
 CuSuite* ArithmeticGetSuite();
 CuSuite* BitwiseGetSuite();
+CuSuite* BooleanGetSuite();
 
 void RunTests() {
     CuString* output = CuStringNew();
@@ -19,6 +20,7 @@ void RunTests() {
     CuSuiteAddSuite(suite, MemoryHandlingGetSuite());
     CuSuiteAddSuite(suite, ArithmeticGetSuite());
     CuSuiteAddSuite(suite, BitwiseGetSuite());
+    CuSuiteAddSuite(suite, BooleanGetSuite());
 
     CuSuiteRun(suite);
     CuSuiteSummary(suite, output);
