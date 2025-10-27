@@ -98,8 +98,7 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
         /* LOADb */ case 0x0B: { monkedore_Word address = POP(vm->data_stack); PUSH(vm->ram[address], vm->data_stack); } break;
         /* STOREb*/ case 0x0C: { monkedore_Word address = POP(vm->data_stack); monkedore_Word word = POP(vm->data_stack); vm->ram[address] = word & 0xFF; } break;
 
-        /* ADD   */ case 0x0D: BINARY_OP_CARRY(a + b, <);
-        /* SUB   */ case 0x0E: BINARY_OP_CARRY(a - b, >);
+        /* ADD   */ case 0x0D: BINARY_OP_CARRY(a + b, <); /* SUB   */ case 0x0E: BINARY_OP_CARRY(a - b, >);
         /* ADDc  */ case 0x0F: BINARY_OP_CARRY(a + b + vm->carry, <);
         /* SUBc  */ case 0x10: BINARY_OP_CARRY(a - b - vm->carry, >);
         
@@ -115,7 +114,7 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
 
         /* JUMP  */ case 0x18: vm->ip = FETCH_WORD(); break;
         /* BRANCH*/ case 0x19: vm->ip += (monkedore_SignedByte) vm->ram[vm->ip++]; break;
-        /* BIF0  */ case 0x1A: break;
+        /* BIF0  */ case 0x1A: if (STACK_TOP(vm->data_stack) == 0) { vm->data_stack.ptr--; vm->ip += (monkedore_SignedByte) vm->ram[vm->ip++]; } else vm->ip++; break;
         /* BIFN0 */ case 0x1B: break;
         /* CALL  */ case 0x1C: break;
         /* RET   */ case 0x1D: break;
