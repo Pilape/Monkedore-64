@@ -117,6 +117,35 @@ void TestReturnOverflow(CuTest* tc) {
     CuAssertTrue(tc, has_overflown);
 }
 
+void TestReturn(CuTest* tc) {
+    monkedore_Byte program[] = {
+        0x1D,
+    };
+    VM_INIT();
+    
+    vm.return_stack.data[vm.return_stack.ptr] = 0xF055;
+    vm.return_stack.ptr++;
+
+    monkedore_ExecuteVmCycle(&vm);
+
+    CuAssertIntEquals(tc, 0xF055, vm.ip);
+}
+
+void TestReturnUnderflow(CuTest* tc) {
+    monkedore_Byte program[] = {
+        0x1D,
+    };
+    VM_INIT();
+
+    int has_underflown = 0;
+    for (int i=0; i<260; i++) {
+        if (monkedore_ExecuteVmCycle(&vm) == monkedore_ERROR_UNDERFLOW) has_underflown = 1;
+    }
+
+    CuAssertTrue(tc, has_underflown);
+
+}
+
 CuSuite* ControlFlowGetSuite() {
     CuSuite* suite = CuSuiteNew();
     SUITE_ADD_TEST(suite, TestJump);
@@ -125,5 +154,7 @@ CuSuite* ControlFlowGetSuite() {
     SUITE_ADD_TEST(suite, TestBranchIfNotZero);
     SUITE_ADD_TEST(suite, TestCall);
     SUITE_ADD_TEST(suite, TestReturnOverflow);
+    SUITE_ADD_TEST(suite, TestReturn);
+    SUITE_ADD_TEST(suite, TestReturnUnderflow);
     return suite;
 }

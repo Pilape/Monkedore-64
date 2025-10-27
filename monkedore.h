@@ -117,7 +117,7 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm) {
         /* BIF0  */ case 0x1A: if (STACK_TOP(vm->data_stack) == 0) { vm->data_stack.ptr--; vm->ip += (monkedore_SignedByte) vm->ram[vm->ip++]; } else vm->ip++; break;
         /* BIFN0 */ case 0x1B: if (STACK_TOP(vm->data_stack) != 0) { vm->data_stack.ptr--; vm->ip += (monkedore_SignedByte) vm->ram[vm->ip++]; } else vm->ip++; break;
         /* CALL  */ case 0x1C: PUSH(vm->ip+2, vm->return_stack); vm->ip = FETCH_WORD(); break;
-        /* RET   */ case 0x1D: break;
+        /* RET   */ case 0x1D: vm->ip = POP(vm->return_stack); break;
     
     }
 
