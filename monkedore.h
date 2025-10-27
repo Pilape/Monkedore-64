@@ -54,6 +54,15 @@ monkedore_ReturnStatus monkedore_ExecuteVmCycle(monkedore_Vm* vm);
 #ifdef MONKEDORE_IMPLEMENTATION
 #undef MONKEDORE_IMPLEMENTATION
 
+void monkedore_InitVM(monkedore_Vm* vm) {
+    *vm = (monkedore_Vm){ 0 };
+
+    monkedore_Color default_palette[] = {
+        {  },
+    };
+
+}
+
 monkedore_ReturnStatus monkedore_LoadProgram(monkedore_Vm* vm, monkedore_Byte program[], monkedore_Word program_length) {
     if (program_length > 0xFFFF/2) return monkedore_ERROR;
 

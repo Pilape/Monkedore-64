@@ -2,24 +2,18 @@
 
 == HARDWARE REGISTERS ==
 
-FFC7      | 1 Byte   | Clear screen
-FFC8      | 1 Byte   | (signed byte) x Position
-FFC9      | 1 Byte   | (signed byte) y Position
+FFC8      | 1 Byte   | Clear screen
 
-FFCA      | 1 Byte   | Draw pixel
+FFC9      | 1 Byte   | (signed byte) x Position
+FFCA      | 1 Byte   | (signed byte) y Position
 
 FFCB      | 1 Byte   | Sprite width
 FFCC      | 1 Byte   | Sprite height
+
 FFCD      | 1 Byte   | Sprite address
 FFCE      | 1 Byte   | Draw sprite
 
 FFCF-FFFF | 48 Bytes | Color palette
-
-== FRAME BUFFERS ==
-We have 2 framebuffers. 1 backround buffer and 1 foreground buffer.
-Both are 128x128.
-The framebuffer in use is determined by the lowest bit in the hardware registers. (Draw sprite, Draw pixel and Clear screen)
-When specified in a hardware register, the buffer used is set in the lowest bit. 0 is backround and 1 is foreground.
 
 == SPRITES ==
 The MONKEDORE-64 only supports sprites
@@ -36,23 +30,14 @@ Set the lowest bit to the layer you're drawing on.
 Set the second lowest bit to 1.
 The sprite register automatically resets next cycle.
 
-== DRAWING PIXELS ==
-
-Set the x and y position registers.
-
-Set the value of Drawpixel.
-The higher 4 bits is the color index.
-Set the lowest bit to the layer you're drawing on.
-Set the second lowest bit to 1.
-The Draw pixel register automatically resets next cycle.
-
 == CLEARING THE SCREEN ==
-Set the value of Clear screen
-The lowest bit is the layer.
-The second lowest bit must be set to one.
+Set the value of Clear screen to 1
 The register resets afterwards
 
 == PALETTE ==
 16 colors (4bpp)
 
 The palette is stored in RAM and can be modified during execution
+
+Color 0 is the backround color. On the foreground layer it is transparent, and on the backround layer it is colored in.
+Color 0 is ignored when drawing sprites.

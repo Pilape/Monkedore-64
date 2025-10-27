@@ -23,15 +23,17 @@ FF00      | 1 Byte   | Button input
 
 FF01-FFC7 |          | Unused
 
-FFC7      | 1 Byte   | Clear screen
-FFC8      | 1 Byte   | (signed byte) x Position
-FFC9      | 1 Byte   | (signed byte) y Position
+FFC8      | 1 Byte   | Clear screen
 
-FFCA      | 1 Byte   | Draw pixel
+FFC9      | 1 Byte   | (signed byte) x Position
+FFCA      | 1 Byte   | (signed byte) y Position
 
 FFCB      | 1 Byte   | Sprite width
 FFCC      | 1 Byte   | Sprite height
+
 FFCD      | 1 Byte   | Sprite address
 FFCE      | 1 Byte   | Draw sprite
 
 FFCF-FFFF | 48 Bytes | Color palette
+
+
