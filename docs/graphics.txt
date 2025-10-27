@@ -2,23 +2,57 @@
 
 == HARDWARE REGISTERS ==
 
-FFC8      | 1 Byte   | (signed byte) x position
-FFC9      | 1 Byte   | (signed byte) y position
+FFC7      | 1 Byte   | Clear screen
+FFC8      | 1 Byte   | (signed byte) x Position
+FFC9      | 1 Byte   | (signed byte) y Position
 
-FFCA      | 1 Byte   | draw pixel
+FFCA      | 1 Byte   | Draw pixel
 
-FFCB      | 1 Byte   | sprite width
-FFCC      | 1 Byte   | sprite height
-FFCD      | 1 Byte   | sprite address
-FFCE      | 1 Byte   | draw sprite
+FFCB      | 1 Byte   | Sprite width
+FFCC      | 1 Byte   | Sprite height
+FFCD      | 1 Byte   | Sprite address
+FFCE      | 1 Byte   | Draw sprite
 
 FFCF-FFFF | 48 Bytes | Color palette
 
+== FRAME BUFFERS ==
+We have 2 framebuffers. 1 backround buffer and 1 foreground buffer.
+Both are 128x128.
+The framebuffer in use is determined by the lowest bit in the hardware registers. (Draw sprite, Draw pixel and Clear screen)
+When specified in a hardware register, the buffer used is set in the lowest bit. 0 is backround and 1 is foreground.
 
 == SPRITES ==
 The MONKEDORE-64 only supports sprites
 
+-- DRAWING SPRITES --
+Set the x Position and y Position to where you want the sprite drawn.
+This position is the position of the top left corner of the sprite.
+
+Set the Sprite width and sprite height registers.
+Set the Sprite address to where the sprite data is stored.
+
+Set the value of Draw sprite
+Set the lowest bit to the layer you're drawing on.
+Set the second lowest bit to 1.
+The sprite register automatically resets next cycle.
+
+== DRAWING PIXELS ==
+
+Set the x and y position registers.
+
+Set the value of Drawpixel.
+The higher 4 bits is the color index.
+Set the lowest bit to the layer you're drawing on.
+Set the second lowest bit to 1.
+The Draw pixel register automatically resets next cycle.
+
+== CLEARING THE SCREEN ==
+Set the value of Clear screen
+The lowest bit is the layer.
+The second lowest bit must be set to one.
+The register resets afterwards
+
 == PALETTE ==
 16 colors (4bpp)
 
-Palette stored in RAM and can be modified during execution
+The palette is stored in RAM and can be modified during execution
