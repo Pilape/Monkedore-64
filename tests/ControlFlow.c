@@ -90,11 +90,40 @@ void TestBranchIfNotZero(CuTest* tc) {
 
 }
 
+void TestCall(CuTest* tc) {
+    monkedore_Byte program[] = {
+        0x00, 0x00, 0x1C, 0x25, 0x26,
+    };
+
+    VM_INIT();
+
+    for (int i=0; i<3; i++) { monkedore_ExecuteVmCycle(&vm); }
+
+    CuAssertIntEquals(tc, 0x2526, vm.ip);
+    CuAssertIntEquals(tc, 5, VM_STACK_TOP(vm.return_stack));
+}
+
+void TestReturnOverflow(CuTest* tc) {
+    monkedore_Byte program[] = {
+        0x1C, 0x00, 0x00,
+    };
+    VM_INIT();
+
+    int has_overflown = 0;
+    for (int i=0; i<260; i++) {
+        if (monkedore_ExecuteVmCycle(&vm) == monkedore_ERROR_OVERFLOW) has_overflown = 1;
+    }
+
+    CuAssertTrue(tc, has_overflown);
+}
+
 CuSuite* ControlFlowGetSuite() {
     CuSuite* suite = CuSuiteNew();
     SUITE_ADD_TEST(suite, TestJump);
     SUITE_ADD_TEST(suite, TestBranch);
     SUITE_ADD_TEST(suite, TestBranchIfZero);
     SUITE_ADD_TEST(suite, TestBranchIfNotZero);
+    SUITE_ADD_TEST(suite, TestCall);
+    SUITE_ADD_TEST(suite, TestReturnOverflow);
     return suite;
 }
