@@ -64,10 +64,37 @@ void TestBranchIfZero(CuTest* tc) {
 
 }
 
+void TestBranchIfNotZero(CuTest* tc) {
+    // No jump
+    {
+        monkedore_Byte program[] = {
+            0x02, 0x00, 0x00, 0x1B, 5,
+        };
+        VM_INIT();
+
+        for (int i=0; i<2; i++) { monkedore_ExecuteVmCycle(&vm); }
+
+        CuAssertIntEquals(tc, 5, vm.ip);
+    }
+    // jump
+    {
+        monkedore_Byte program[] = {
+            0x02, 0x0F, 0x21, 0x1B, 25,
+        };
+        VM_INIT();
+
+        for (int i=0; i<2; i++) { monkedore_ExecuteVmCycle(&vm); }
+
+        CuAssertIntEquals(tc, 5+25, vm.ip);
+    }
+
+}
+
 CuSuite* ControlFlowGetSuite() {
     CuSuite* suite = CuSuiteNew();
     SUITE_ADD_TEST(suite, TestJump);
     SUITE_ADD_TEST(suite, TestBranch);
     SUITE_ADD_TEST(suite, TestBranchIfZero);
+    SUITE_ADD_TEST(suite, TestBranchIfNotZero);
     return suite;
 }
