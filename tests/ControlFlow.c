@@ -15,84 +15,61 @@ void TestJump(CuTest* tc) {
     CuAssertIntEquals(tc, 0xFF05, vm.ip);
 }
 
-void TestBranch(CuTest* tc) {
-    {
-        monkedore_Byte program[] = {
-            0x19, 25,
-        };
-        VM_INIT();
-
-        monkedore_ExecuteVmCycle(&vm);
-
-        CuAssertIntEquals(tc, 25+2, vm.ip);
-    }
-    {
-        monkedore_Byte program[] = {
-            0x19, -25,
-        };
-        VM_INIT();
-
-        monkedore_ExecuteVmCycle(&vm);
-
-        CuAssertIntEquals(tc, (monkedore_Word)(2 - 25 & 0xFFFF), vm.ip);
-    }
-}
-
-void TestBranchIfZero(CuTest* tc) {
+void TestJumpIfZero(CuTest* tc) {
     // Jump
     {
         monkedore_Byte program[] = {
-            0x02, 0x00, 0x00, 0x1A, 25,
+            0x02, 0x00, 0x00, 0x19, 0x55, 0xFF,
         };
         VM_INIT();
 
         for (int i=0; i<2; i++) { monkedore_ExecuteVmCycle(&vm); }
 
-        CuAssertIntEquals(tc, 25+5, vm.ip);
+        CuAssertIntEquals(tc, 0x55FF, vm.ip);
     }
     // No jump
     {
         monkedore_Byte program[] = {
-            0x02, 0x0F, 0x21, 0x1A, -25,
+            0x02, 0x0F, 0x21, 0x19, 0xFF, 0x55,
         };
         VM_INIT();
 
         for (int i=0; i<2; i++) { monkedore_ExecuteVmCycle(&vm); }
 
-        CuAssertIntEquals(tc, 5, vm.ip);
+        CuAssertIntEquals(tc, 6, vm.ip);
     }
 
 }
 
-void TestBranchIfNotZero(CuTest* tc) {
+void TestJumpIfNotZero(CuTest* tc) {
     // No jump
     {
         monkedore_Byte program[] = {
-            0x02, 0x00, 0x00, 0x1B, 5,
+            0x02, 0x00, 0x00, 0x1A, 0x05, 0x11
         };
         VM_INIT();
 
         for (int i=0; i<2; i++) { monkedore_ExecuteVmCycle(&vm); }
 
-        CuAssertIntEquals(tc, 5, vm.ip);
+        CuAssertIntEquals(tc, 6, vm.ip);
     }
     // jump
     {
         monkedore_Byte program[] = {
-            0x02, 0x0F, 0x21, 0x1B, 25,
+            0x02, 0x0F, 0x21, 0x1A, 0x25, 0x11,
         };
         VM_INIT();
 
         for (int i=0; i<2; i++) { monkedore_ExecuteVmCycle(&vm); }
 
-        CuAssertIntEquals(tc, 5+25, vm.ip);
+        CuAssertIntEquals(tc, 0x2511, vm.ip);
     }
 
 }
 
 void TestCall(CuTest* tc) {
     monkedore_Byte program[] = {
-        0x00, 0x00, 0x1C, 0x25, 0x26,
+        0x00, 0x00, 0x1B, 0x25, 0x26,
     };
 
     VM_INIT();
@@ -103,15 +80,15 @@ void TestCall(CuTest* tc) {
     CuAssertIntEquals(tc, 5, VM_STACK_TOP(vm.return_stack));
 }
 
-void TestReturnOverflow(CuTest* tc) {
+void TestCallOverflow(CuTest* tc) {
     monkedore_Byte program[] = {
-        0x1C, 0x00, 0x00,
+        0x1B, 0x00, 0x00,
     };
     VM_INIT();
 
     int has_overflown = 0;
     for (int i=0; i<260; i++) {
-        if (monkedore_ExecuteVmCycle(&vm) == monkedore_ERROR_OVERFLOW) has_overflown = 1;
+        if (monkedore_ExecuteVmCycle(&vm) == monkedore_ERROR_OVERFLOW) { has_overflown = 1; break; }
     }
 
     CuAssertTrue(tc, has_overflown);
@@ -119,7 +96,7 @@ void TestReturnOverflow(CuTest* tc) {
 
 void TestReturn(CuTest* tc) {
     monkedore_Byte program[] = {
-        0x1D,
+        0x1C,
     };
     VM_INIT();
     
@@ -133,13 +110,13 @@ void TestReturn(CuTest* tc) {
 
 void TestReturnUnderflow(CuTest* tc) {
     monkedore_Byte program[] = {
-        0x1D,
+        0x1C,
     };
     VM_INIT();
 
     int has_underflown = 0;
     for (int i=0; i<260; i++) {
-        if (monkedore_ExecuteVmCycle(&vm) == monkedore_ERROR_UNDERFLOW) has_underflown = 1;
+        if (monkedore_ExecuteVmCycle(&vm) == monkedore_ERROR_UNDERFLOW) { has_underflown = 1; break; }
     }
 
     CuAssertTrue(tc, has_underflown);
@@ -149,11 +126,10 @@ void TestReturnUnderflow(CuTest* tc) {
 CuSuite* ControlFlowGetSuite() {
     CuSuite* suite = CuSuiteNew();
     SUITE_ADD_TEST(suite, TestJump);
-    SUITE_ADD_TEST(suite, TestBranch);
-    SUITE_ADD_TEST(suite, TestBranchIfZero);
-    SUITE_ADD_TEST(suite, TestBranchIfNotZero);
+    SUITE_ADD_TEST(suite, TestJumpIfZero);
+    SUITE_ADD_TEST(suite, TestJumpIfNotZero);
     SUITE_ADD_TEST(suite, TestCall);
-    SUITE_ADD_TEST(suite, TestReturnOverflow);
+    SUITE_ADD_TEST(suite, TestCallOverflow);
     SUITE_ADD_TEST(suite, TestReturn);
     SUITE_ADD_TEST(suite, TestReturnUnderflow);
     return suite;

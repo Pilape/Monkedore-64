@@ -22,7 +22,7 @@ void TestOverflow(CuTest* tc) {
 
     int has_overflown = 0;
     for (int i=0; i<258; i++) {
-        if (monkedore_ExecuteVmCycle(&vm) == monkedore_ERROR_OVERFLOW) has_overflown = 1;
+        if (monkedore_ExecuteVmCycle(&vm) == monkedore_ERROR_OVERFLOW) { has_overflown = 1; break; }
         vm.ip = 0;
     }
     CuAssertTrue(tc, has_overflown);
@@ -72,7 +72,7 @@ void TestUnderflow(CuTest* tc) {
 
     int has_underflown = 0;
     for (int i=0; i<15; i++) {
-        if (monkedore_ExecuteVmCycle(&vm) == monkedore_ERROR_UNDERFLOW) has_underflown = 1;
+        if (monkedore_ExecuteVmCycle(&vm) == monkedore_ERROR_UNDERFLOW) { has_underflown = 1; break; }
         vm.ip = 0;
     }
 

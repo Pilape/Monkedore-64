@@ -36,8 +36,7 @@ Opcode | Name  | Function
   17   | LESS  | ( a b -- a<b )
 
   18   | JUMP  | ( -- ) ip = NextWord
-  19   | BRANCH| ( -- ) ip += (signed)NextByte
-  1A   | BIF0  | ( a -- ) if (a == 0) ip += (signed)NextByte
-  1B   | BIFN0 | ( a -- ) if (a != 0) ip += (signed)NextByte
-  1C   | CALL  | ( -- ) Push(ip, returnStack); ip = NextWord
-  1D   | RET   | ( -- ) ip = Pop(returnStack)
+  19   | JIF0  | ( a -- ) if (a == 0) ip = NextWord
+  1A   | JIFN0 | ( a -- ) if (a != 0) ip = NextWord
+  1B   | CALL  | ( -- ) Push(ip, returnStack); ip = NextWord
+  1C   | RET   | ( -- ) ip = Pop(returnStack)
