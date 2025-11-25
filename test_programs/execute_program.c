@@ -4,39 +4,43 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int GetByteCodeLength(char* path) {
-    FILE* fp = fopen(path, "r");
+typedef struct {
+    monkedore_Byte data[0x10000/2];
+    monkedore_Word size;
+} Rom;
+
+void LoadByteCode(Rom* dest, char* path) {
+    FILE* fp = fopen(path, "rb");
 
     if (fp == NULL) {
         printf("Could not open file\n");
         exit(-1);
     }
+    fread(dest, sizeof(Rom), 1, fp);
 
-    fseek(fp, 0, SEEK_END);
-
-    int length = ftell(fp)/3;
-    
     fclose(fp);
-
-    return length;
 }
 
-void LoadByteCode(monkedore_Byte* dest, char* path) {
-    FILE* fp = fopen(path, "r");
+void PrintStacks(monkedore_Vm* vm) {
 
-    if (fp == NULL) {
-        printf("Could not open file\n");
-        exit(-1);
+    printf("== RETURN STACK ==\n");
+    for (int i=vm->return_stack.ptr-1; i>=0; i--) {
+        if (i == vm->return_stack.ptr-1) printf("------------------\n");
+        printf("%02x: %0x04x\n", i, vm->return_stack.data[i]);
+        if (i == vm->return_stack.ptr-1) printf("------------------\n");
     }
+    printf("==================\n");
+    printf("\n\n");
 
-    int i = 0;
-    int temp = 0;
-    while (fscanf(fp, "%02x ", &temp) == 2) {
-        dest[i] = temp;
-        if (i % 16 == 15) fscanf(fp, "\n");
+    printf("== DATA STACK ==\n");
+    for (int i=vm->data_stack.ptr-1; i>=0; i--) {
+        if (i == vm->data_stack.ptr-1) printf("----------------\n");
+        printf("%02x: 0x%04x | %d\n", i, vm->data_stack.data[i], vm->data_stack.data[i]);
+        if (i == vm->data_stack.ptr-1) printf("----------------\n");
     }
+    printf("================\n");
 
-    fclose(fp);
+
 }
 
 int main(int argc, char* argv[]) {
@@ -48,37 +52,51 @@ int main(int argc, char* argv[]) {
     monkedore_Vm creature_of_steel = { 0 };
     monkedore_InitVM(&creature_of_steel);
 
-    int length = GetByteCodeLength(argv[1]);
-    monkedore_Byte source[length];
-    LoadByteCode(source, argv[1]);
-    for (int i=0; i<length; i++) {
-        printf("%02x ", source[i]);
+    Rom source = { 0 };
+    LoadByteCode(&source, argv[1]);
+
+    /*for (int i=0; i<100; i++) {
+        printf("%02x ", source.data[i]);
         if (i % 16 == 15) printf("\n");
     }
+    printf("\n");
+    printf("size: %d\n", source.size);
+    return -1;*/
 
-    monkedore_LoadProgram(&creature_of_steel, source, length);
+    monkedore_LoadProgram(&creature_of_steel, source.data, source.size);
     monkedore_ReturnStatus status = monkedore_SUCCESS;
 
     while(status == monkedore_SUCCESS) {
+        monkedore_Byte current_instruction = creature_of_steel.ram[creature_of_steel.ip-1];
         status = monkedore_ExecuteVmCycle(&creature_of_steel);
-        printf("%d | %d\n", creature_of_steel.ip, creature_of_steel.data_stack.ptr);
+        // Step debugging
+        if (argc == 3) {
+            int temp = 0;
+            scanf("%d", &temp);
+
+            PrintStacks(&creature_of_steel);
+
+            printf("IP: %04x(%d)\n", creature_of_steel.ip, creature_of_steel.ip);
+            printf("Instruction: %02x\n", creature_of_steel.ip);
+        }
     }
 
     switch (status) {
         case monkedore_ERROR:
             printf("An error has occured\n");
-            return -1;
+            break;
         case monkedore_ERROR_OVERFLOW:
             printf("Stack overflow\n");
-            return -1;
+            break;
         case monkedore_ERROR_UNDERFLOW:
             printf("Stack underflow\n");
-            return -1; 
+            break;
+        default:
+            printf("Program ran successfully :)\n");
+            break;
     }
-
-    for (int i=creature_of_steel.data_stack.ptr; i>=0; i--) {
-        printf("%d\n", creature_of_steel.data_stack.data[i]);
-    }
+    printf("\n\n");
+    PrintStacks(&creature_of_steel);
 
     return 0;
 }

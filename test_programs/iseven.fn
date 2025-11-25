@@ -1,0 +1,12 @@
+: bNOT DUP bNAND ; ( n1 -- ~n1 )
+
+: bAND bNOT bNAND ;  ( n1 n2 -- n1&n2 )
+
+: ISEVEN ( n1 -- b1 )
+    1 bNAND
+    1 =
+;
+
+: MAIN 
+    2 ISEVEN
+;
